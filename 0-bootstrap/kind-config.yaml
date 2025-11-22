@@ -1,0 +1,27 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  # KubeadmConfigPatches allow us to tweak the internal K8s components
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        # CRITICAL for local dev: Tells K8s to allow Ingress NGINX 
+        # to bypass some strict node constraints
+        node-labels: "ingress-ready=true"
+  
+  extraPortMappings:
+  # THE FRONT DOOR (HTTP)
+  # We map Host:8080 -> Container:80
+  # Traffic flow: You (localhost:8080) -> Podman VM -> Kind Node (Port 80) -> Ingress Controller -> MLflow Service
+  # TODO: Understand this a little bit more ...
+  - containerPort: 80
+    hostPort: 8080
+    protocol: TCP
+  
+  # THE SECURE DOOR (HTTPS) - Optional but good practice
+  - containerPort: 443
+    hostPort: 8443
+    protocol: TCP
