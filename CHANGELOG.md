@@ -1,3 +1,9 @@
+## 0.3.0 (2025-11-23)
+
+### 🐛🚑️ Fixes
+
+- **2-ml-platform/mlflow/ingress-mlflow.yaml**: fix api path (ui works static, this has to be at /api instead of /mlflow/api) >>> ⏰ 15m
+
 ## 0.2.0 (2025-11-23)
 
 ### ✨ Features
