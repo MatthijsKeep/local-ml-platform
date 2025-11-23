@@ -1,0 +1,24 @@
+# set to local mode
+mode: standalone
+drivesPerNode: 1
+replicas: 1
+
+persistence:
+  enabled: true
+  size: 10Gi
+
+# note: of course, in an enterprise setting you would do this differently
+rootUser: minioadmin
+rootPassword: minioadmin
+
+# Create buckets
+buckets:
+  - name: mlflow
+    policy: public
+  - name: data
+    policy: none
+
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 250m
