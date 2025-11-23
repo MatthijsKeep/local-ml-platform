@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio-ingress
+  namespace: minio-system
+  annotations:
+    # We need a rewrite target because MinIO expects the path to be clean
+    # BUT since we set the ENV var, the UI will handle the assets correctly
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          # Route 1: The UI (Console)
+          # Matches /minio OR /minio/anything
+          - path: /minio(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: minio-console
+                port:
+                  number: 9001
+          
+          # Route 2: The API (S3)
+          # Matches /minio_api OR /minio_api/anything
+          - path: /minio_api(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: minio
+                port:
+                  number: 9000
