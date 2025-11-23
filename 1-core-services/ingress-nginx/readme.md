@@ -21,3 +21,10 @@ You should see something like this:
 NAME                                        READY   STATUS    RESTARTS   AGE
 ingress-nginx-controller-76f7f87994-86f2n   1/1     Running   0          30s
 ```
+
+And if you want you can even test it by running:
+```bash
+curl localhost:8080
+```
+If you get `404 Not Found` from nginx, it is listening (just not doing anything yet)
+If you get a connection refused, the port mapping probably failed
