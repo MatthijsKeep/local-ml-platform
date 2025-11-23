@@ -4,8 +4,6 @@ metadata:
   name: mlflow-ingress
   namespace: ml-platform
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-    nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
 spec:
@@ -13,12 +11,10 @@ spec:
   rules:
     - http:
         paths:
-          # MLflow UI and API
-          # Matches /mlflow OR /mlflow/anything
-          - path: /mlflow(/|$)(.*)
-            pathType: ImplementationSpecific
+          - path: /mlflow
+            pathType: Prefix
             backend:
               service:
-                name: mlflow  # The service created by the Helm chart
+                name: mlflow
                 port:
                   number: 5000
