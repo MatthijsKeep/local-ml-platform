@@ -1,0 +1,61 @@
+# postgres configuration
+backendStore:
+  databaseMigration: true
+  databaseConnectionCheck: true
+  postgres:
+    enabled: true
+    host: mlflow-postgres-postgresql.ml-platform.svc.cluster.local
+    port: 5432
+    database: mlflowdb
+    user: mlflow 
+    password: mlflowpass
+
+# s3 configuration for artifcts
+artifactRoot:
+  s3:
+    enabled: true
+    bucket: mlflow
+    awsAccessKeyId: minioadmin
+    awsSecretAccessKey: minioadmin
+
+extraEnvVars:
+  MLFLOW_S3_ENDPOINT_URL: http://minio.minio-system.svc.cluster.local:9000
+  MLFLOW_S3_IGNORE_TLS: "true"
+
+# 4. Static prefix for subpath deployment
+# This tells MLflow it's served under /mlflow
+extraArgs:
+  staticPrefix: /mlflow
+
+# 5. Health probes - use /health (NOT /mlflow/health) , not sure why?
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 5000
+  initialDelaySeconds: 30
+  periodSeconds: 20
+  timeoutSeconds: 6
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 5000
+  initialDelaySeconds: 30
+  periodSeconds: 20
+  timeoutSeconds: 6
+  failureThreshold: 3
+
+# 6. Service configuration
+service:
+  type: ClusterIP
+  port: 5000
+
+# 7. Resource limits
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 250m
+  limits:
+    memory: 1Gi
+    cpu: 500m
