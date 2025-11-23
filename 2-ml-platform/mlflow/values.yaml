@@ -12,6 +12,7 @@ backendStore:
 
 # s3 configuration for artifcts
 artifactRoot:
+  proxiedArtifactStorage: true
   s3:
     enabled: true
     bucket: mlflow
@@ -26,6 +27,10 @@ extraEnvVars:
 # This tells MLflow it's served under /mlflow
 extraArgs:
   staticPrefix: /mlflow
+  artifacts-destination: s3://mlflow
+
+extraFlags:
+  - serveArtifacts
 
 # 5. Health probes - use /health (NOT /mlflow/health) , not sure why?
 livenessProbe:

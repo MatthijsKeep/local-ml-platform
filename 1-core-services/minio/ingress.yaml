@@ -4,17 +4,17 @@ metadata:
   name: minio-ingress
   namespace: minio-system
   annotations:
-    # We need a rewrite target because MinIO expects the path to be clean
-    # BUT since we set the ENV var, the UI will handle the assets correctly
     nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/upstream-vhost: "minio.minio-system.svc.cluster.local:9000"
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
 spec:
   ingressClassName: nginx
   rules:
     - http:
         paths:
-          # Route 1: The UI (Console)
-          # Matches /minio OR /minio/anything
+          # UI Console
           - path: /minio(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
@@ -23,8 +23,7 @@ spec:
                 port:
                   number: 9001
           
-          # Route 2: The API (S3)
-          # Matches /minio_api OR /minio_api/anything
+          # S3 API - with proper Host header
           - path: /minio_api(/|$)(.*)
             pathType: ImplementationSpecific
             backend:

@@ -1,3 +1,9 @@
+## 0.4.0 (2025-11-23)
+
+### 🐛🚑️ Fixes
+
+- **1-core-services/minio/ingress.yaml-2-ml-platform/mlflow/values.yaml**: set up proxy for storing artifacts through nginx ingress >>> ⏰ 30m
+
 ## 0.3.0 (2025-11-23)
 
 ### 🐛🚑️ Fixes

@@ -37,5 +37,10 @@ minio.minio-system.cluster.local
 There will be more descriptions, namely how you can access it from localhost.
 
 **But**, since we set up NGINX, we should be able to access it from `localhost:8080/minio/`. 
+After setting up ingress with
 
+```bash
+❯ kubectl apply -f 1-core-services/minio/ingress.yaml      
 
+ingress.networking.k8s.io/minio-ingress configured
+```
