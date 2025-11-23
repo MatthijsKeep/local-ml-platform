@@ -1,0 +1,42 @@
+# 1. Backend Store (Connect to PostgreSQL)
+backendStore:
+  databaseMigration: true
+  databaseConnectionCheck: true
+  postgres:
+    enabled: true
+    host: mlflow-postgres-postgresql.ml-platform.svc.cluster.local
+    port: 5432
+    database: mlflowdb
+    user: mlflow 
+    password: mlflowpass
+
+# 2. Artifact Store (Connect to MinIO)
+artifactRoot:  # Wrapped in artifactRoot
+  s3:
+    enabled: true
+    bucket: mlflow
+    awsAccessKeyId: minioadmin
+    awsSecretAccessKey: minioadmin
+
+# 3. MinIO S3 endpoint configuration
+extraEnvVars:
+  MLFLOW_S3_ENDPOINT_URL: http://minio.minio-system.svc.cluster.local:9000
+  MLFLOW_S3_IGNORE_TLS: "true"
+  # Subpath configuration - tells MLflow it's behind /mlflow
+  SCRIPT_NAME: /mlflow
+  # Flask uses this to generate correct URLs
+  APPLICATION_ROOT: /mlflow
+
+# 4. Service configuration
+service:
+  type: ClusterIP
+  port: 5000
+
+# 5. Resource limits
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 250m
+  limits:
+    memory: 1Gi
+    cpu: 500m
