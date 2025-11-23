@@ -3,7 +3,7 @@
 # "PHONY" means these are commands, not files
 .PHONY: up down clean
 
-# The "One-Click" Setup
+# Setup
 up:
 	@echo "🚀 Provisioning Infrastructure..."
 	./podman-setup.sh
@@ -16,7 +16,9 @@ up:
 down:
 	kind delete cluster
 	podman machine stop
+	@echo "✅ Cluster succesfully deleted and stopped."
 
-# The "Nuke it" option - useful when things break (and they will)
+# The "Nuke it" option (useful when things break)
 clean: down
 	podman machine rm -f
+	@echo "✅ Cluster cleaned."
