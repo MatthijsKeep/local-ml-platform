@@ -11,6 +11,16 @@ spec:
   rules:
     - http:
         paths:
+          # Route 1: API endpoints (MUST come first for proper matching)
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: mlflow
+                port:
+                  number: 5000
+          
+          # Route 2: UI with static prefix
           - path: /mlflow
             pathType: Prefix
             backend:
