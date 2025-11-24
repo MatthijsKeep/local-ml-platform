@@ -14,3 +14,7 @@ podman machine init --cpus 4 --memory 8888 --disk-size 50
 
 # 3. Power On
 podman machine start
+
+# Test AMD64 emulation
+podman run --rm --arch=amd64 alpine uname -m
+# Should output: x86_64
