@@ -21,7 +21,9 @@ deploy:
 	kubectl wait --namespace kubeflow --for=condition=ready pod -l app=minio --timeout=120s
 	@echo "⏳ Waiting for API Server (Application Layer)..."
 	kubectl wait --namespace kubeflow --for=condition=ready pod -l app=ml-pipeline --timeout=300s
-	@echo "✅ Deployment Complete. Access UI at http://localhost/pipeline"
+	@echo "✅ Deployment Complete. Port forward in another terminal with this command:. 
+	@echo kubectl port-forward -n kubeflow svc/ml-pipeline-ui 8080:80
+	@echo then: Access UI at http://localhost/pipeline"
 
 status:
 	kubectl get pods -n kubeflow
