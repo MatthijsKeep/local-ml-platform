@@ -1,24 +1,44 @@
-# Makefile
-
-# "PHONY" means these are commands, not files
-.PHONY: up down clean
+.PHONY: up down clean status tunnel
 
 # Setup
 up:
 	@echo "🚀 Provisioning Infrastructure..."
-	./podman-setup.sh
-	@echo "📦 Creating Kubernetes Cluster..."
-	# We use the Podman provider explicitly
-	KIND_EXPERIMENTAL_PROVIDER=podman kind create cluster --config kind-config.yaml
-	@echo "✅ Metal Layer Complete. Ready for Core Services."
+	./minikube-setup.sh
+	@echo "✅ Cluster Ready"
 
-# Tear everything down
+# Tear down
 down:
-	kind delete cluster
-	podman machine stop
-	@echo "✅ Cluster succesfully deleted and stopped."
+	minikube stop
+	colima stop
+	@echo "✅ Cluster stopped"
 
-# The "Nuke it" option (useful when things break)
-clean: down
-	podman machine rm -f
-	@echo "✅ Cluster cleaned."
+# Nuclear option
+clean:
+	minikube delete
+	colima delete
+	@echo "✅ Cluster cleaned"
+
+# Status check
+status:
+	@echo "📊 Cluster Status:"
+	@echo "\n=== Colima ==="
+	colima status
+	@echo "\n=== Minikube ==="
+	minikube status
+	@echo "\n=== Kubernetes ==="
+	kubectl cluster-info
+	kubectl get nodes
+
+# Access services (replaces Kind's port mapping)
+tunnel:
+	@echo "🌐 Starting Minikube tunnel..."
+	@echo "   This exposes LoadBalancer services on localhost"
+	@echo "   Keep this terminal open"
+	minikube tunnel
+
+# Alternative: Port forward to match Kind's localhost:8080
+tunnel-8080:
+	@echo "🔌 Port forwarding to localhost:8080..."
+	kubectl port-forward -n ingress-nginx \
+	  service/ingress-nginx-controller \
+	  8080:80 8443:443
