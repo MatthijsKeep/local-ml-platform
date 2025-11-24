@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kfp-ingress
+  namespace: kubeflow
+  annotations:
+    # KFP UI is picky about paths. We strip the prefix.
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          # Access via http://localhost:8080/pipeline
+          - path: /pipeline(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ml-pipeline-ui
+                port:
+                  number: 80
+          # We also need to route the API for the Python SDK
+          # Access via http://localhost:8080/pipeline_api
+          - path: /pipeline_api(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ml-pipeline
+                port:
+                  number: 8888
