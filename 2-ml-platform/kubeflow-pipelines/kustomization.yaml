@@ -55,4 +55,26 @@ patches:
           name: OBJECTSTORECONFIG_SECURE
           value: "false"
 
+# 2. Disable Google Cloud Proxy Agent (Not needed locally)
+  - target:
+      kind: Deployment
+      name: proxy-agent
+      namespace: kubeflow
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 0
+
+  # 3. Disable Metadata Envoy (Often causes crash loops locally if not configured for gRPC/Istio)
+  # If you find the UI works without it, keep it disabled. 
+  # If the UI Metadata tab breaks, we can re-enable it.
+  - target:
+      kind: Deployment
+      name: metadata-envoy-deployment
+      namespace: kubeflow
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 0
+
 namespace: kubeflow
